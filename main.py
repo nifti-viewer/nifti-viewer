@@ -14,7 +14,7 @@ class MainWindow(QMainWindow):
 
         self.sliders = [self.image_slider_0, self.image_slider_1, self.image_slider_2]
         self.action_open.triggered.connect(self.openFile)
-        self.setWindowTitle('YOLO')
+        self.setWindowTitle('Nifti viewer')
         self.show()
 
     def openFile(self):
