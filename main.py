@@ -22,8 +22,8 @@ class MainWindow(QMainWindow):
 
         if not os.path.isfile(fileInfo[0]): return
 
-        nb_img = nibabel.load(fileInfo[0])
-        data = nb_img.get_data()
+        niba_img = nibabel.load(fileInfo[0])
+        data = niba_img.get_data()
 
         for i, slider in enumerate(self.sliders):
             slider.setMaximum(data.shape[i])
