@@ -25,8 +25,8 @@ class MainWindow(QMainWindow):
         fileInfo = QFileDialog.getOpenFileName(parent=self, directory=os.path.expanduser('~'), filter='*.nii *.nii.gz')
         if not os.path.isfile(fileInfo[0]): return
 
-        self.nb_img = nibabel.load(fileInfo[0])
-        data = self.nb_img.get_data()
+        self.niba_img = nibabel.load(fileInfo[0])
+        data = self.niba_img.get_data()
 
         for i, slider in enumerate(self.sliders):
             slider.setMaximum(data.shape[i] - 1)
@@ -35,10 +35,10 @@ class MainWindow(QMainWindow):
         for i, viewer in enumerate(self.viewers):
             self.drawViewer(i)
 
-        print(self.nb_img.header)
+        print(self.niba_img.header)
 
     def drawViewer(self, num_slider: int):
-        data = self.nb_img.get_data()
+        data = self.niba_img.get_data()
         if data is None: return
 
         r = (self.sliders[0].value(), slice(None), slice(None))
