@@ -14,6 +14,8 @@ from PyQt5.QtWidgets import QApplication, QFileDialog, QGraphicsScene, QMainWind
 class MainWindow(QMainWindow):
     niba_img = None
     num_image = -1
+    image_min = 0
+    image_max = 0
 
     def __init__(self):
         super().__init__()
@@ -42,6 +44,8 @@ class MainWindow(QMainWindow):
 
         self.niba_img = nibabel.load(file_info[0])
         data = self.niba_img.get_data()
+        self.image_min = data.min()
+        self.image_max = data.max()
 
         if len(data.shape) == 4:
             self.num_image = 0
@@ -67,13 +71,14 @@ class MainWindow(QMainWindow):
         # TODO : integrate 4th slider for multiple images
 
         plane = data[slice_range]
-        minimum = plane.min()
-        maximum = plane.max()
+        # minimum = plane.min()
+        # maximum = plane.max()
 
-        if maximum - minimum == 0: maximum = 1
+        if self.image_min == self.image_max: self.image_max = 1
 
-        converted = numpy.require(numpy.divide(numpy.subtract(plane, minimum), (maximum - minimum) / 256), numpy.uint8,
-                                  'C')
+        converted = numpy.require(
+            numpy.divide(numpy.subtract(plane, self.image_min), (self.image_max - self.image_min) / 256), numpy.uint8,
+            'C')
         transform = QTransform()
         scales_indexes = [((x + num_slider) % 3) + 1 for x in [1, 2]]
 
