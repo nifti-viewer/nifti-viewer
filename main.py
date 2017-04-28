@@ -13,25 +13,28 @@ from PyQt5.QtWidgets import QApplication, QFileDialog, QGraphicsScene, QMainWind
 
 class MainWindow(QMainWindow):
     niba_img = None
+    num_image = -1
 
     def __init__(self):
         super().__init__()
         uic.loadUi('mainwindow.ui', self)
 
-        self.sliders = [self.image_slider_0,
-                        self.image_slider_1, self.image_slider_2]
+        self.image_sliders = [self.image_slider_0,
+                              self.image_slider_1, self.image_slider_2]
         self.viewers = [self.image_viewer_0,
                         self.image_viewer_1, self.image_viewer_2]
         self.action_open.triggered.connect(self.open_file)
         self.setWindowTitle('Nifti viewer')
         self.show()
 
-        self.sliders[0].valueChanged.connect(lambda value: self.draw_viewer(0))
-        self.sliders[1].valueChanged.connect(lambda value: self.draw_viewer(1))
-        self.sliders[2].valueChanged.connect(lambda value: self.draw_viewer(2))
+        self.image_sliders[0].valueChanged.connect(lambda value: self.draw_viewer(0))
+        self.image_sliders[1].valueChanged.connect(lambda value: self.draw_viewer(1))
+        self.image_sliders[2].valueChanged.connect(lambda value: self.draw_viewer(2))
 
         for viewer in self.viewers:
             viewer.setViewport(QGLWidget())
+
+        self.image_cycle_slider.valueChanged.connect(self.cycle_images)
 
     def open_file(self):
         file_info = QFileDialog.getOpenFileName(parent=self, directory=os.path.expanduser('~'), filter='*.nii *.nii.gz')
@@ -40,7 +43,11 @@ class MainWindow(QMainWindow):
         self.niba_img = nibabel.load(file_info[0])
         data = self.niba_img.get_data()
 
-        for i, slider in enumerate(self.sliders):
+        if len(data.shape) == 4:
+            self.num_image = 0
+            self.image_cycle_slider.setMaximum(data.shape[3] - 1)
+
+        for i, slider in enumerate(self.image_sliders):
             slider.setMaximum(data.shape[i] - 1)
             slider.setValue(0)
 
@@ -53,15 +60,20 @@ class MainWindow(QMainWindow):
         if data is None: return
 
         slice_range = [slice(None)] * 3
-        slice_range[num_slider] = self.sliders[num_slider].value()
+        slice_range[num_slider] = self.image_sliders[num_slider].value()
         slice_range = tuple(slice_range)
 
-        if len(data.shape) == 4: slice_range = slice_range + (0,)  # TODO : integrate 4th slider for multiple images
+        if len(data.shape) == 4: slice_range = slice_range + (self.num_image,)
+        # TODO : integrate 4th slider for multiple images
 
         plane = data[slice_range]
         minimum = plane.min()
         maximum = plane.max()
-        converted = numpy.require(numpy.divide(numpy.subtract(plane, minimum), maximum / 256), numpy.uint8, 'C')
+
+        if maximum - minimum == 0: maximum = 1
+
+        converted = numpy.require(numpy.divide(numpy.subtract(plane, minimum), (maximum - minimum) / 256), numpy.uint8,
+                                  'C')
         transform = QTransform()
         scales_indexes = [((x + num_slider) % 3) + 1 for x in [1, 2]]
 
@@ -73,6 +85,10 @@ class MainWindow(QMainWindow):
 
         scene.addPixmap(pixmap)
         self.viewers[num_slider].setScene(scene)
+
+    def cycle_images(self, value):
+        self.num_image = value
+        for i in range(3): self.draw_viewer(i)
 
 
 if __name__ == '__main__':
