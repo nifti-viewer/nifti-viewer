@@ -3,29 +3,41 @@ import os
 import sys
 
 import nibabel
+import numpy
+from PIL import Image
 from PyQt5 import uic
-from PyQt5.QtGui import QBrush, QColor, QPen
+from PyQt5.QtGui import QTransform
+from PyQt5.QtOpenGL import QGLWidget
 from PyQt5.QtWidgets import QApplication, QFileDialog, QGraphicsScene, QMainWindow
 
 
 class MainWindow(QMainWindow):
+    niba_img = None
+
     def __init__(self):
         super().__init__()
         uic.loadUi('mainwindow.ui', self)
 
-        self.sliders = [self.image_slider_0, self.image_slider_1, self.image_slider_2]
-        self.viewers = [self.image_viewer_0, self.image_viewer_1, self.image_viewer_2]
-        self.action_open.triggered.connect(self.openFile)
+        self.sliders = [self.image_slider_0,
+                        self.image_slider_1, self.image_slider_2]
+        self.viewers = [self.image_viewer_0,
+                        self.image_viewer_1, self.image_viewer_2]
+        self.action_open.triggered.connect(self.open_file)
         self.setWindowTitle('Nifti viewer')
         self.show()
 
-        for i, slider in enumerate(self.sliders): slider.valueChanged.connect(lambda value: self.drawViewer(i))
+        self.sliders[0].valueChanged.connect(lambda value: self.draw_viewer(0))
+        self.sliders[1].valueChanged.connect(lambda value: self.draw_viewer(1))
+        self.sliders[2].valueChanged.connect(lambda value: self.draw_viewer(2))
 
-    def openFile(self):
-        fileInfo = QFileDialog.getOpenFileName(parent=self, directory=os.path.expanduser('~'), filter='*.nii *.nii.gz')
-        if not os.path.isfile(fileInfo[0]): return
+        for viewer in self.viewers:
+            viewer.setViewport(QGLWidget())
 
-        self.niba_img = nibabel.load(fileInfo[0])
+    def open_file(self):
+        file_info = QFileDialog.getOpenFileName(parent=self, directory=os.path.expanduser('~'), filter='*.nii *.nii.gz')
+        if not os.path.isfile(file_info[0]): return
+
+        self.niba_img = nibabel.load(file_info[0])
         data = self.niba_img.get_data()
 
         for i, slider in enumerate(self.sliders):
@@ -33,30 +45,37 @@ class MainWindow(QMainWindow):
             slider.setValue(0)
 
         for i, viewer in enumerate(self.viewers):
-            self.drawViewer(i)
+            self.draw_viewer(i)
 
-        print(self.niba_img.header)
-
-    def drawViewer(self, num_slider: int):
+    def draw_viewer(self, num_slider: int):
         data = self.niba_img.get_data()
+        header = self.niba_img.get_header()
         if data is None: return
 
-        r = (self.sliders[0].value(), slice(None), slice(None))
-        if len(data.shape) == 4: r = r + (0,)
+        slice_range = [slice(None)] * 3
+        slice_range[num_slider] = self.sliders[num_slider].value()
+        slice_range = tuple(slice_range)
 
-        plane = data[r]
-        scene = QGraphicsScene(0, 0, len(plane), len(plane[0]))
+        if len(data.shape) == 4: slice_range = slice_range + (0,)  # TODO : integrate 4th slider for multiple images
 
-        for i, arr in enumerate(plane):
-            for j, val in enumerate(arr):
-                grey = int((val + 2048) / 16)
-                scene.addRect(i, 6 * j, 1, 6, QPen(QColor(grey, grey, grey, 0xff)),
-                              QBrush(QColor(grey, grey, grey, 0xff)))
+        plane = data[slice_range]
+        minimum = plane.min()
+        maximum = plane.max()
+        converted = numpy.require(numpy.divide(numpy.subtract(plane, minimum), maximum / 256), numpy.uint8, 'C')
+        transform = QTransform()
+        scales_indexes = [((x + num_slider) % 3) + 1 for x in [1, 2]]
 
-        self.viewers[0].setScene(scene)
+        transform.scale(header['pixdim'][min(scales_indexes)], header['pixdim'][max(scales_indexes)])
+        transform.rotate(-90)
+
+        pixmap = Image.fromarray(converted).toqpixmap().transformed(transform)
+        scene = QGraphicsScene(0, 0, pixmap.width(), pixmap.height())
+
+        scene.addPixmap(pixmap)
+        self.viewers[num_slider].setScene(scene)
 
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    w = MainWindow()
+    MainWindow()
     sys.exit(app.exec())
