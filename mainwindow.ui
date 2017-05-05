@@ -16,10 +16,10 @@
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout">
     <item row="0" column="0">
-     <widget class="QGraphicsView" name="image_viewer_0"/>
+        <widget class="QGraphicsView" name="image_viewer_1"/>
     </item>
     <item row="1" column="1">
-     <widget class="QSlider" name="image_slider_1">
+        <widget class="QSlider" name="image_slider_0">
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
       </property>
@@ -33,7 +33,7 @@
      </widget>
     </item>
     <item row="1" column="0">
-     <widget class="QSlider" name="image_slider_0">
+        <widget class="QSlider" name="image_slider_1">
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
       </property>
@@ -43,26 +43,26 @@
      <widget class="QGraphicsView" name="image_viewer_2"/>
     </item>
     <item row="0" column="1">
-     <widget class="QGraphicsView" name="image_viewer_1"/>
+        <widget class="QGraphicsView" name="image_viewer_0"/>
     </item>
        <item row="2" column="1">
            <layout class="QGridLayout" name="grid_layout">
-               <item row="1" column="1">
-                   <widget class="QLabel" name="image_cycle_label">
+               <item row="3" column="1">
+                   <widget class="QLabel" name="image_contrst_max_label">
                        <property name="text">
-                           <string>Cycle images</string>
-                       </property>
-                   </widget>
-               </item>
-               <item row="1" column="2">
-                   <widget class="QSlider" name="image_cycle_slider">
-                       <property name="orientation">
-                           <enum>Qt::Horizontal</enum>
+                           <string>Change contrast (max)</string>
                        </property>
                    </widget>
                </item>
                <item row="2" column="2">
                    <widget class="QSlider" name="image_contrast_min_slider">
+                       <property name="orientation">
+                           <enum>Qt::Horizontal</enum>
+                       </property>
+                   </widget>
+               </item>
+               <item row="3" column="2">
+                   <widget class="QSlider" name="image_contrast_max_slider">
                        <property name="orientation">
                            <enum>Qt::Horizontal</enum>
                        </property>
@@ -75,17 +75,17 @@
                        </property>
                    </widget>
                </item>
-               <item row="3" column="2">
-                   <widget class="QSlider" name="image_contrast_max_slider">
-                       <property name="orientation">
-                           <enum>Qt::Horizontal</enum>
+               <item row="1" column="1">
+                   <widget class="QLabel" name="image_cycle_label">
+                       <property name="text">
+                           <string>Cycle images</string>
                        </property>
                    </widget>
                </item>
-               <item row="3" column="1">
-                   <widget class="QLabel" name="image_contrst_max_label">
-                       <property name="text">
-                           <string>Change contrast (max)</string>
+               <item row="1" column="2">
+                   <widget class="QSlider" name="image_cycle_slider">
+                       <property name="orientation">
+                           <enum>Qt::Horizontal</enum>
                        </property>
                    </widget>
                </item>
