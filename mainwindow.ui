@@ -15,36 +15,6 @@
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout">
-    <item row="0" column="0">
-        <widget class="QGraphicsView" name="image_viewer_1"/>
-    </item>
-    <item row="1" column="1">
-        <widget class="QSlider" name="image_slider_0">
-      <property name="orientation">
-       <enum>Qt::Horizontal</enum>
-      </property>
-     </widget>
-    </item>
-    <item row="3" column="0">
-     <widget class="QSlider" name="image_slider_2">
-      <property name="orientation">
-       <enum>Qt::Horizontal</enum>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="0">
-        <widget class="QSlider" name="image_slider_1">
-      <property name="orientation">
-       <enum>Qt::Horizontal</enum>
-      </property>
-     </widget>
-    </item>
-    <item row="2" column="0">
-     <widget class="QGraphicsView" name="image_viewer_2"/>
-    </item>
-    <item row="0" column="1">
-        <widget class="QGraphicsView" name="image_viewer_0"/>
-    </item>
        <item row="2" column="1">
            <layout class="QGridLayout" name="grid_layout">
                <item row="3" column="1">
@@ -90,6 +60,69 @@
                    </widget>
                </item>
            </layout>
+       </item>
+       <item row="0" column="1">
+           <widget class="QGraphicsView" name="image_viewer_0"/>
+       </item>
+       <item row="0" column="0">
+           <widget class="QGraphicsView" name="image_viewer_1"/>
+       </item>
+       <item row="1" column="1">
+           <layout class="QHBoxLayout" name="horizontal_layout_0">
+               <item>
+                   <widget class="QLabel" name="image_slice_label_0">
+                       <property name="text">
+                           <string>Slice 0</string>
+                       </property>
+                   </widget>
+               </item>
+               <item>
+                   <widget class="QSlider" name="image_slider_0">
+                       <property name="orientation">
+                           <enum>Qt::Horizontal</enum>
+                       </property>
+                   </widget>
+               </item>
+           </layout>
+       </item>
+       <item row="1" column="0">
+           <layout class="QHBoxLayout" name="horizontal_layout_1">
+               <item>
+                   <widget class="QLabel" name="image_slice_label_1">
+                       <property name="text">
+                           <string>Slice 0</string>
+                       </property>
+                   </widget>
+               </item>
+               <item>
+                   <widget class="QSlider" name="image_slider_1">
+                       <property name="orientation">
+                           <enum>Qt::Horizontal</enum>
+                       </property>
+                   </widget>
+               </item>
+           </layout>
+       </item>
+       <item row="3" column="0">
+           <layout class="QHBoxLayout" name="horizontal_layout_2">
+               <item>
+                   <widget class="QLabel" name="image_slice_label_2">
+                       <property name="text">
+                           <string>Slice 0</string>
+                       </property>
+                   </widget>
+               </item>
+               <item>
+                   <widget class="QSlider" name="image_slider_2">
+                       <property name="orientation">
+                           <enum>Qt::Horizontal</enum>
+                       </property>
+                   </widget>
+               </item>
+           </layout>
+       </item>
+       <item row="2" column="0">
+           <widget class="QGraphicsView" name="image_viewer_2"/>
        </item>
    </layout>
   </widget>
