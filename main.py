@@ -105,7 +105,7 @@ class MainWindow(QMainWindow):
         scene.addPixmap(pixmap)
         self.image_viewers[num_slider].setScene(scene)
         self.image_viewers[num_slider].set_scale(scale)
-        self.image_viewers[num_slider].make_line()
+        self.image_viewers[num_slider].make_cursor()
 
     def draw_viewers(self):
         for i in range(3): self.draw_viewer(i)
