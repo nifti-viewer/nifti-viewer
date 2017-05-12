@@ -65,10 +65,30 @@
            </layout>
        </item>
        <item row="0" column="1">
-           <widget class="CursorGraphicsView" name="image_viewer_0"/>
+           <widget class="CursorGraphicsView" name="image_viewer_0">
+               <property name="cursor" stdset="0">
+                   <cursorShape>CrossCursor</cursorShape>
+               </property>
+               <property name="verticalScrollBarPolicy">
+                   <enum>Qt::ScrollBarAsNeeded</enum>
+               </property>
+               <property name="horizontalScrollBarPolicy">
+                   <enum>Qt::ScrollBarAlwaysOff</enum>
+               </property>
+           </widget>
        </item>
        <item row="0" column="0">
-           <widget class="CursorGraphicsView" name="image_viewer_1"/>
+           <widget class="CursorGraphicsView" name="image_viewer_1">
+               <property name="cursor" stdset="0">
+                   <cursorShape>CrossCursor</cursorShape>
+               </property>
+               <property name="verticalScrollBarPolicy">
+                   <enum>Qt::ScrollBarAlwaysOff</enum>
+               </property>
+               <property name="horizontalScrollBarPolicy">
+                   <enum>Qt::ScrollBarAlwaysOff</enum>
+               </property>
+           </widget>
        </item>
        <item row="1" column="1">
            <layout class="QHBoxLayout" name="horizontal_layout_0">
@@ -125,7 +145,17 @@
            </layout>
        </item>
        <item row="2" column="0">
-           <widget class="CursorGraphicsView" name="image_viewer_2"/>
+           <widget class="CursorGraphicsView" name="image_viewer_2">
+               <property name="cursor" stdset="0">
+                   <cursorShape>CrossCursor</cursorShape>
+               </property>
+               <property name="verticalScrollBarPolicy">
+                   <enum>Qt::ScrollBarAlwaysOff</enum>
+               </property>
+               <property name="horizontalScrollBarPolicy">
+                   <enum>Qt::ScrollBarAlwaysOff</enum>
+               </property>
+           </widget>
        </item>
    </layout>
   </widget>

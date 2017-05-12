@@ -6,7 +6,7 @@ import nibabel
 import numpy
 from PIL import Image
 from PyQt5 import uic
-from PyQt5.QtCore import QRegExp
+from PyQt5.QtCore import QPointF, QRegExp
 from PyQt5.QtGui import QTransform
 from PyQt5.QtWidgets import QApplication, QFileDialog, QGraphicsScene, QGraphicsView, QLabel, QMainWindow, QSlider
 
@@ -62,6 +62,8 @@ class MainWindow(QMainWindow):
         self.contrast_sliders[1].setValue(self.image_max)
 
         for i, viewer in enumerate(self.image_viewers):
+            viewer.set_num(i)
+            viewer.set_sliders(self.image_sliders)
             self.draw_viewer(i)
 
     def draw_viewer(self, num_slider: int):
@@ -92,8 +94,9 @@ class MainWindow(QMainWindow):
                                   numpy.uint8, 'C')
         transform = QTransform()
         scales_indexes = [((x + num_slider) % 3) + 1 for x in [1, 2]]
+        scale = QPointF(header['pixdim'][min(scales_indexes)], header['pixdim'][max(scales_indexes)])
 
-        transform.scale(header['pixdim'][min(scales_indexes)], header['pixdim'][max(scales_indexes)])
+        transform.scale(scale.x(), scale.y())
         transform.rotate(-90)
 
         pixmap = Image.fromarray(converted).toqpixmap().transformed(transform)
@@ -101,6 +104,8 @@ class MainWindow(QMainWindow):
 
         scene.addPixmap(pixmap)
         self.image_viewers[num_slider].setScene(scene)
+        self.image_viewers[num_slider].set_scale(scale)
+        self.image_viewers[num_slider].make_line()
 
     def draw_viewers(self):
         for i in range(3): self.draw_viewer(i)
