@@ -63,6 +63,7 @@ class MainWindow(QMainWindow):
 
         for i, viewer in enumerate(self.image_viewers):
             viewer.set_num(i)
+            viewer.set_viewers(self.image_viewers)
             viewer.set_sliders(self.image_sliders)
             self.draw_viewer(i)
 
