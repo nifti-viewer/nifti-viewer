@@ -6,26 +6,30 @@ import nibabel
 import numpy
 from PIL import Image
 from PyQt5 import uic
-from PyQt5.QtCore import QPointF, QRegExp
+from PyQt5.QtCore import QPointF, QRegExp, QStringListModel
 from PyQt5.QtGui import QTransform
-from PyQt5.QtWidgets import QApplication, QFileDialog, QGraphicsScene, QGraphicsView, QLabel, QMainWindow, QSlider
+from PyQt5.QtWidgets import QApplication, QFileDialog, QGraphicsScene, QGraphicsView, QLabel, QListView, QMainWindow, \
+    QSlider
+
+from CursorGraphicsView import CursorGraphicsView
 
 
 class MainWindow(QMainWindow):
-    niba_img = None
-    num_image = -1
-    image_min = 0
-    image_max = 0
-
     def __init__(self):
         super().__init__()
         uic.loadUi('mainwindow.ui', self)
 
+        self.action_Open.triggered.connect(self.open_file)
+        self.action_Save_points_to_file.triggered.connect(self.save_points_to_file)
         self.image_labels = self.findChildren(QLabel, QRegExp("image_slice_label_."))
         self.image_sliders = self.findChildren(QSlider, QRegExp("image_slider_."))
         self.image_viewers = self.findChildren(QGraphicsView, QRegExp("image_viewer_."))
         self.contrast_sliders = self.findChildren(QSlider, QRegExp("image_contrast_.*_slider"))
-        self.action_open.triggered.connect(self.open_file)
+        self.points_list = self.findChild(QListView, 'points_list')
+        self.points_model = QStringListModel()
+        self.points = []
+
+        self.points_list.setModel(self.points_model)
         self.setWindowTitle('Nifti viewer')
         self.show()
 
@@ -41,13 +45,15 @@ class MainWindow(QMainWindow):
         file_info = QFileDialog.getOpenFileName(parent=self, directory=os.path.expanduser('~'), filter='*.nii *.nii.gz')
         if not os.path.isfile(file_info[0]): return
 
+        self.action_Save.triggered.connect(self.save_point)
+        self.action_Delete.triggered.connect(self.delete_point)
         self.niba_img = nibabel.load(file_info[0])
         data = self.niba_img.get_data()
         self.image_min = data.min()
         self.image_max = data.max()
+        self.num_image = 0
 
         if len(data.shape) == 4:
-            self.num_image = 0
             self.image_cycle_slider.setMaximum(data.shape[3] - 1)
 
         for i, slider in enumerate(self.image_sliders):
@@ -66,6 +72,23 @@ class MainWindow(QMainWindow):
             viewer.set_viewers(self.image_viewers)
             viewer.set_sliders(self.image_sliders)
             self.draw_viewer(i)
+
+    def save_point(self):
+        if CursorGraphicsView.coords is None: return
+        self.points.append(str(CursorGraphicsView.coords + [self.num_image or 0]))
+        self.points_model.setStringList(self.points)
+
+    def save_points_to_file(self):
+        file_info = QFileDialog.getSaveFileName(parent=self, directory=os.path.expanduser('~'), filter='*.txt')
+
+        try:
+            file = open(file_info[0], 'w')
+            file.write(os.linesep.join(map(str, self.points)))
+        except:
+            pass
+
+    def delete_point(self):
+        pass
 
     def draw_viewer(self, num_slider: int):
         if self.niba_img is None: return

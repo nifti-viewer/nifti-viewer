@@ -6,10 +6,12 @@ from PyQt5.QtWidgets import QGraphicsItemGroup, QGraphicsLineItem, QGraphicsView
 
 
 class CursorGraphicsView(QGraphicsView):
-    num = -1
-    scale = QPointF(1, 1)
-    viewers = None
-    sliders = None
+    coords = None
+
+    def __init__(self, *__args):
+        super().__init__(*__args)
+        self.num = -1
+        self.scale = QPointF(1, 1)
 
     def mouseReleaseEvent(self, event):
         pos_x = event.x() - (self.width() - self.scene().width() - 1) / 2
@@ -17,10 +19,10 @@ class CursorGraphicsView(QGraphicsView):
 
         if pos_x >= 0 and pos_x < self.scene().width() and pos_y >= 0 and pos_y < self.scene().height():
             slider_values = [floor(pos_x / self.scale.x()), floor((self.scene().height() - pos_y) / self.scale.y())]
-            slider_coords = self.get_coords(slider_values)
+            CursorGraphicsView.coords = self.get_coords(slider_values)
 
-            for i, slider in enumerate(self.sliders): slider.setValue(slider_coords[i])
-            for viewer in self.viewers: viewer.show_cursor(slider_coords)
+            for i, slider in enumerate(self.sliders): slider.setValue(self.coords[i])
+            for viewer in self.viewers: viewer.show_cursor(self.coords)
 
     def set_num(self, num):
         self.num = num

@@ -172,22 +172,46 @@
     <property name="title">
      <string>&amp;File</string>
     </property>
-    <addaction name="action_open"/>
-    <addaction name="action_exit"/>
+       <addaction name="action_Open"/>
+       <addaction name="action_Exit"/>
+   </widget>
+      <widget class="QMenu" name="menuPoint">
+          <property name="title">
+              <string>&amp;Point</string>
+          </property>
+          <addaction name="action_Save"/>
+          <addaction name="action_Save_points_to_file"/>
+          <addaction name="action_Delete"/>
    </widget>
    <addaction name="menuFile"/>
+      <addaction name="menuPoint"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
-  <action name="action_open">
+     <action name="action_Open">
    <property name="text">
     <string>&amp;Open</string>
    </property>
   </action>
-  <action name="action_exit">
+     <action name="action_Exit">
    <property name="text">
     <string>&amp;Exit</string>
    </property>
   </action>
+     <action name="action_Save">
+         <property name="text">
+             <string>&amp;Save</string>
+         </property>
+     </action>
+     <action name="action_Delete">
+         <property name="text">
+             <string>&amp;Delete</string>
+         </property>
+     </action>
+     <action name="action_Save_points_to_file">
+         <property name="text">
+             <string>Save points to &amp;file</string>
+         </property>
+     </action>
  </widget>
     <customwidgets>
         <customwidget>
@@ -199,7 +223,7 @@
  <resources/>
  <connections>
   <connection>
-   <sender>action_exit</sender>
+      <sender>action_Exit</sender>
    <signal>triggered()</signal>
    <receiver>MainWindow</receiver>
    <slot>close()</slot>
