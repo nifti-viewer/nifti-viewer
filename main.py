@@ -94,7 +94,10 @@ class MainWindow(QMainWindow):
             pass
 
     def delete_point(self):
-        pass
+        for selection in self.points_list.selectedIndexes():
+            self.points.pop(selection.row())
+
+        self.points_model.setStringList(self.points)
 
     def save_slice(self, num):
         file_info = QFileDialog.getSaveFileName(parent=self, directory=os.path.expanduser('~'), filter='*.png')
