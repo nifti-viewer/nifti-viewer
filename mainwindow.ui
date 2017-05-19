@@ -183,8 +183,17 @@
           <addaction name="action_Save_points_to_file"/>
           <addaction name="action_Delete"/>
    </widget>
+      <widget class="QMenu" name="menuSlice">
+          <property name="title">
+              <string>&amp;Slice</string>
+          </property>
+          <addaction name="action_Save_sagittal_slice"/>
+          <addaction name="action_Save_coronal_slice"/>
+          <addaction name="action_Save_transverse_slice"/>
+      </widget>
    <addaction name="menuFile"/>
       <addaction name="menuPoint"/>
+      <addaction name="menuSlice"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
      <action name="action_Open">
@@ -210,6 +219,21 @@
      <action name="action_Save_points_to_file">
          <property name="text">
              <string>Save points to &amp;file</string>
+         </property>
+     </action>
+     <action name="action_Save_coronal_slice">
+         <property name="text">
+             <string>Save &amp;coronal slice</string>
+         </property>
+     </action>
+     <action name="action_Save_sagittal_slice">
+         <property name="text">
+             <string>Save &amp;sagittal slice</string>
+         </property>
+     </action>
+     <action name="action_Save_transverse_slice">
+         <property name="text">
+             <string>Save &amp;transverse slice</string>
          </property>
      </action>
  </widget>

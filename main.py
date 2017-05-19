@@ -21,6 +21,12 @@ class MainWindow(QMainWindow):
 
         self.action_Open.triggered.connect(self.open_file)
         self.action_Save_points_to_file.triggered.connect(self.save_points_to_file)
+
+        for i, save_button in enumerate([self.action_Save_sagittal_slice,
+                                         self.action_Save_coronal_slice,
+                                         self.action_Save_transverse_slice]):
+            save_button.triggered.connect(lambda value, i=i: self.save_slice(i))
+
         self.image_labels = self.findChildren(QLabel, QRegExp("image_slice_label_."))
         self.image_sliders = self.findChildren(QSlider, QRegExp("image_slider_."))
         self.image_viewers = self.findChildren(QGraphicsView, QRegExp("image_viewer_."))
@@ -89,6 +95,11 @@ class MainWindow(QMainWindow):
 
     def delete_point(self):
         pass
+
+    def save_slice(self, num):
+        file_info = QFileDialog.getSaveFileName(parent=self, directory=os.path.expanduser('~'), filter='*.png')
+        image = Image.fromqpixmap(self.image_viewers[num].scene().items()[-1].pixmap())
+        image.save(file_info[0], 'PNG')
 
     def draw_viewer(self, num_slider: int):
         if self.niba_img is None: return
