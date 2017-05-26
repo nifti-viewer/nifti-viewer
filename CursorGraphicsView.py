@@ -14,6 +14,8 @@ class CursorGraphicsView(QGraphicsView):
         self.scale = QPointF(1, 1)
 
     def mouseReleaseEvent(self, event):
+        if not self.scene(): return
+
         pos_x = event.x() - (self.width() - self.scene().width() - 1) / 2
         pos_y = event.y() - (self.height() - self.scene().height() - 1) / 2
 
