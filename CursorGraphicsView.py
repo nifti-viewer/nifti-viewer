@@ -16,9 +16,13 @@ class CursorGraphicsView(QGraphicsView):
     def mouseReleaseEvent(self, event):
         if not self.scene(): return
 
+        # the event's position is relative to the CursorGraphicsView, but we need it relative to the image
         pos_x = event.x() - (self.width() - self.scene().width() - 1) / 2
         pos_y = event.y() - (self.height() - self.scene().height() - 1) / 2
 
+        # if the position of the click event is on the image, we convert the pixel position on screen to a voxel
+        # position in the image, and then update all CursorGraphicsViews to show the corresponding slice as well as a
+        # cursor pointing at the clicked voxel
         if pos_x >= 0 and pos_x < self.scene().width() and pos_y >= 0 and pos_y < self.scene().height():
             slider_values = [floor(pos_x / self.scale.x()), floor((self.scene().height() - pos_y) / self.scale.y())]
             CursorGraphicsView.coords = self.get_coords(slider_values)
@@ -26,10 +30,10 @@ class CursorGraphicsView(QGraphicsView):
             for i, slider in enumerate(self.sliders): slider.setValue(self.coords[i])
             for viewer in self.viewers: viewer.show_cursor(self.coords)
 
-    def set_num(self, num):
+    def set_num(self, num: int):
         self.num = num
 
-    def set_scale(self, scale):
+    def set_scale(self, scale: float):
         self.scale = scale
 
     def set_viewers(self, viewers):
